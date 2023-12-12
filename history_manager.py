@@ -14,7 +14,15 @@ class ChatHistoryManager:
         self.chat_history.append({"sender": "User", "message": message})
     
     def get_history(self):
-        history_str = "\n".join([f"{m['sender']}: {m['message']}" for m in self.chat_history])
+        history_str = ""
+        for i, m in enumerate(self.chat_history):
+            if i == len(self.chat_history) - 1 and m['sender'] == 'User':
+                history_str += "User's last question: " + m['message']
+            else:
+                history_str += f"{m['sender']}: {m['message']}"
+            if i < len(self.chat_history) - 1:
+                history_str += "\n"
+
         return history_str
     
     def save_history_to_disk(self, filename):
@@ -30,17 +38,17 @@ class ChatHistoryManager:
     
     def get_optimized_history(self):
         payload = {
-            "inputs": "<s> [INST]Summarize the last message question and relevant context from this chat history: \n" + self.get_history() + " [/INST] </s>" ,
+            "inputs": "Use the chat history to improve the user's last question, what does the user want to know?: \n" + self.get_history() + "\n\nSummary: " ,
         }
         print(">>> input: ", payload["inputs"])
         response = requests.post(
-            "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
+            "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
             headers=self.headers,
             json=payload
         )
         if response.status_code == 200:
             summary = response.json()
-            return summary[0]["generated_text"].split("</s>")[-1].strip()
+            return summary[0]["generated_text"].split("Summary:")[-1].strip()
         else:
             return f"An error occurred: {response.text}"
         
