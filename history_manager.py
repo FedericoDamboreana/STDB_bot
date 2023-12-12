@@ -17,7 +17,7 @@ class ChatHistoryManager:
         history_str = ""
         for i, m in enumerate(self.chat_history):
             if i == len(self.chat_history) - 1 and m['sender'] == 'User':
-                history_str += "User's last question: " + m['message']
+                history_str += "\nUser's last question: " + m['message']
             else:
                 history_str += f"{m['sender']}: {m['message']}"
             if i < len(self.chat_history) - 1:
@@ -38,7 +38,7 @@ class ChatHistoryManager:
     
     def get_optimized_history(self):
         payload = {
-            "inputs": "Use the chat history to improve the user's last question, what does the user want to know?: \n" + self.get_history() + "\n\nSummary: " ,
+            "inputs": "Given this conversation: \n" + self.get_history() + "\n\nWhat is the user's last question?.\n\nSummary: " ,
         }
         print(">>> input: ", payload["inputs"])
         response = requests.post(
