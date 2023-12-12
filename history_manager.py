@@ -30,16 +30,17 @@ class ChatHistoryManager:
     
     def get_optimized_history(self):
         payload = {
-            "inputs":"Summarize the following chat history: " + self.get_history(),
+            "inputs": "<s> [INST]Summarize the last message question and relevant context from this chat history: \n" + self.get_history() + " [/INST] </s>" ,
         }
+        print(">>> input: ", payload["inputs"])
         response = requests.post(
-            "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
+            "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
             headers=self.headers,
             json=payload
         )
         if response.status_code == 200:
             summary = response.json()
-            return summary
+            return summary[0]["generated_text"].split("</s>")[-1].strip()
         else:
             return f"An error occurred: {response.text}"
         
@@ -51,7 +52,6 @@ class ChatHistoryManager:
         context = "Conversation summary:\n" + history
         
         input = question + context
-        print(">>> input: ", input)
         payload = {
             "inputs": input,
         }
@@ -65,16 +65,14 @@ class ChatHistoryManager:
 
 
 chat_manager = ChatHistoryManager()
-chat_manager.add_user_message("Hi, how are you?")
-chat_manager.add_ai_message("Hello! I'm fine! how about you?")
-chat_manager.add_user_message("I'm fine too, i'd like yo know what is a chatbot!")
-chat_manager.add_ai_message("a chatbot is a kind of AI that can have conversations.")
-chat_manager.add_user_message("Wow! How do they work?")
+chat_manager.add_user_message("I'm planning a vacation. Any suggestions?")
+chat_manager.add_ai_message("That sounds exciting! What kind of places do you like?")
+chat_manager.add_user_message("I love beaches and sunny weather.")
+chat_manager.add_ai_message("You might enjoy visiting the Caribbean islands then. They have beautiful beaches.")
+chat_manager.add_user_message("That's a great idea! How's the weather there around this time?")
 
-print(chat_manager.get_history())
 optimized_history = chat_manager.get_optimized_history()
-optimized_history = optimized_history[0]["summary_text"]
-print("\n\n"+optimized_history)
+print("\n\n>>> optimized history: " + optimized_history)
 
 
 answer = chat_manager.generate_query(optimized_history)
