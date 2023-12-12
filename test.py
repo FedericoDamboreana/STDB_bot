@@ -1,20 +1,15 @@
 import requests
 
-def generate_query(history, last_message):
-    API_URL = "https://api-inference.huggingface.co/models/bert-large-uncased-whole-word-masking-finetuned-squad"
-    # Ensure your API token is handled securely in production
+def generate_query(history):
+    API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-base"
     headers = {"Authorization": "Bearer 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"}
 
-    context = "Conversation summary:\n" + "\n".join(history) + "\nLast message: " + last_message
-    question = "What do i need to research to answer the last message?"
-    inputs = {
-        "question": question,
-        "context": context
-    }
-    print(inputs)
-
+    question = "What do i need to research to answer the last message? \n"
+    context = "Conversation summary:\n" + history
+    
+    input = question + context
     payload = {
-        "inputs": inputs,
+        "inputs": input,
     }
 
     response = requests.post(API_URL, headers=headers, json=payload)
