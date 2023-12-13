@@ -38,7 +38,7 @@ class ChatHistoryManager:
     
     def get_optimized_history(self):
         payload = {
-            "inputs": "Given this conversation: \n" + self.get_history() + "\n\nWhat is the user's last question?.\n\nSummary: " ,
+            "inputs": "Given this conversation: \n" + self.get_history() + "\n\nTell me what is the user's last question.\n\nSummary: " ,
         }
         print(">>> input: ", payload["inputs"])
         response = requests.post(
