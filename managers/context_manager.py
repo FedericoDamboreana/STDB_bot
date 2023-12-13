@@ -36,7 +36,6 @@ class ContextManager:
     def get_matches(self, query):
         matches = self.chroma_db.similarity_search(query, k=3)
         matches_str = "\n".join([f"{m.page_content}" for m in matches])
-        print(">>> matches str: ", matches_str)
         return matches_str
 
     def get_optimized_context(self, query):
@@ -51,12 +50,7 @@ class ContextManager:
         )
         if response.status_code == 200:
             summary = response.json()
-            return summary
+            return summary[0]["summary_text"]
         else:
             return f"An error occurred: {response.text}"
         pass
-
-# Ejemplo de uso
-manager = ContextManager('./store')
-manager.load_db()
-print(">>> ", manager.get_optimized_context("How do I access Infographics inside Business Analyst?"))

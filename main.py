@@ -1,40 +1,33 @@
-from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.llms import GPT4All
-from langchain.chains import ConversationalRetrievalChain
-from langchain.memory import ConversationBufferMemory
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import Chroma
-import numpy as np
-import docx
+from managers.context_manager import ContextManager
+from managers.history_manager import HistoryManager
 
-embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+class MainController:
+    def __init__(self) -> None:
+        self.history_manager = HistoryManager()
+        self.context_manager = ContextManager("./store")
+        self.context_manager.load_db()
+        pass
 
-callbacks = [StreamingStdOutCallbackHandler()]
-llm = GPT4All(model="./gpt4all-falcon-q4_0.gguf", callbacks=callbacks, verbose=True)
+    def run(self):
+        self.history_manager.add_user_message("Is there a way to create a custom study area in Business Analyst without using rings or drive times?")
+        self.history_manager.add_ai_message("Yes, you can use the drawing tools to create a custom polygon. Would you like a guide on how to do that?")
+        self.history_manager.add_user_message("Absolutely, how do I draw a custom polygon?")
 
-doc = docx.Document('dataset_1.docx')
+        optimized_history = self.history_manager.get_optimized_history()
+        print("=====================================================================")
+        print("\nHISTORY\n")
+        print(optimized_history)    
 
+        query = self.history_manager.generate_query(optimized_history)
+        print("=====================================================================")
+        print("\nQUERY\n")
+        print(query)
 
-document_text = "\n".join([para.text for para in doc.paragraphs if para.text.strip() != ''])
-text_splitter = CharacterTextSplitter(
-    separator="\n",
-    chunk_size=100,
-    chunk_overlap=0,
-    length_function=len,
-    is_separator_regex=False
-)
-documents = text_splitter.create_documents([document_text])
-docs = text_splitter.split_documents(documents)
-chroma_db  = Chroma.from_documents(docs, embedding_function)
+        context = self.context_manager.get_optimized_context(query)
+        print("=====================================================================")
+        print("\nCONTEXT\n")
+        print(context)
 
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+controller = MainController()
 
-qa_chain = ConversationalRetrievalChain.from_llm(
-    llm=llm, 
-    retriever=chroma_db.as_retriever(search_kwargs={"k": 3}),
-    memory=memory
-)
-print(">>> chain")
-result = qa_chain({"question": "How do I access Infographics inside Business Analyst?"})
-print(result['answer'])
+controller.run()
