@@ -21,6 +21,11 @@ class HistoryManager:
         history_str = "\n".join([f"{m['sender']}: {m['message']}" for m in self.chat_history])
         return history_str
     
+    def get_full_history(self):
+        history = self.get_history()
+        history += "\n" + 'user: ' + self.last_message
+        return history
+    
     def save_history_to_disk(self, filename):
         # a implementar
         pass
