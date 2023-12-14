@@ -58,9 +58,6 @@ class HistoryManager:
         payload = {
             "inputs": "This is the summary of a conversation of a user and a AI: " + summary + "\n\nThis is the user's last question: " + self.last_message + prompt,
         }
-        print("=====================================================================")
-        print("\nINPUT\n")
-        print(payload["inputs"])
 
         response = requests.post(
             "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
