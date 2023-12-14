@@ -1,5 +1,6 @@
 from managers.context_manager import ContextManager
 from managers.history_manager import HistoryManager
+from managers.state_manager import StateManager
 from langchain.llms import GPT4All
 import time
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
@@ -10,6 +11,8 @@ class MainController:
 
         self.history_manager = HistoryManager()
         history_manager_time = time.time()
+
+        self.state_manager = StateManager()
 
         self.context_manager = ContextManager("./store")
         context_manager_time = time.time()

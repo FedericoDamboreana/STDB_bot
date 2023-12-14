@@ -5,7 +5,7 @@ class HistoryManager:
         self.chat_history = []
         self.last_message = ""
         self.headers = {
-            "Authorization": "Bearer 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"
+            "Authorization": "Bearer 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"
         }
     
     def add_ai_message(self, message):
