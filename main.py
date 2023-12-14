@@ -88,13 +88,12 @@ Answer:"""
             history_time = time.time()
 
             state = self.state_manager.get_state(history)
-
-            if state == "greeting":
-                self.greeting_answer(history)
-            else:
+            if "question answering" in state:
                 history = self.history_manager.get_optimized_history()
                 history_time = time.time()
                 self.qa_answer(history)
+            else:
+                self.greeting_answer(history)
 
             end_time = time.time()
 
