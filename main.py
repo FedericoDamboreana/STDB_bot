@@ -4,10 +4,14 @@ from managers.state_manager import StateManager
 from langchain.llms import GPT4All
 import time
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+import torch
 
 class MainController:
     def __init__(self) -> None:
         self.start_time = time.time()
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(device)
 
         self.history_manager = HistoryManager()
         history_manager_time = time.time()
@@ -17,7 +21,7 @@ class MainController:
         self.context_manager = ContextManager("./store")
         context_manager_time = time.time()
         
-        self.llm = GPT4All(model="./models/gpt4all-falcon-q4_0.gguf", callbacks=[StreamingStdOutCallbackHandler()], verbose=True, n_threads=10)
+        self.llm = GPT4All(model="./models/gpt4all-falcon-q4_0.gguf", callbacks=[StreamingStdOutCallbackHandler()], verbose=True, n_threads=10, device=device)
         llm_time = time.time()
         
         self.context_manager.load_db()
