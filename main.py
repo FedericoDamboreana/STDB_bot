@@ -6,12 +6,15 @@ import time
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 import torch
 
+# IMPORT GPU
+from transformers import LlamaTokenizer
+from nomic.gpt4all.gpt4all import GPT4AllGPU
+
 class MainController:
     def __init__(self) -> None:
         self.start_time = time.time()
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(device)
 
         self.history_manager = HistoryManager()
         history_manager_time = time.time()
@@ -21,8 +24,11 @@ class MainController:
         self.context_manager = ContextManager("./store")
         context_manager_time = time.time()
         
-        self.llm = GPT4All(model="./models/gpt4all-falcon-q4_0.gguf", callbacks=[StreamingStdOutCallbackHandler()], verbose=True, n_threads=10, device=device)
-        llm_time = time.time()
+	if device == cpu:
+	        self.llm = GPT4AllGPU(model="./models/gpt4all-falcon-q4_0.gguf", callbacks=[StreamingStdOutCallbackHandler()], verbose=True, n_threads=10)
+        else:
+		self.llm = GPT4ALL(model="./models/gpt4all-falcon-q4_0.gguf", callbacks=[StreamingStdOutCallbackHandler()], verbose=True, n_threads=10)
+	llm_time = time.time()
         
         self.context_manager.load_db()
         load_db_time = time.time()
