@@ -39,7 +39,7 @@ class HistoryManager:
     
     def get_optimized_history(self):
         payload = {
-            "inputs": "Given this conversation history between a user and an AI: \n" + self.get_full_history() + "\n\nPay attention to the last user's message. Summarize this conversation history without any extra information and without AI response.\nSummary: The user" ,
+            "inputs": "Given this conversation history between a user and an AI: \n" + self.get_full_history() + "\n\nSummarize the last user's message without any extra information and without AI response.\nSummary: The user" ,
         }
         response = requests.post(
             "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",

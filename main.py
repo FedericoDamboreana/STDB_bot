@@ -51,7 +51,6 @@ This is some information to help you answer the user's question: {context}
 This is the user's question: {query}
 
 Answer:"""
-        
         return prompt.format(history=history, context=context, query=query)
 
     def run(self):
@@ -86,11 +85,12 @@ Answer:"""
             print("STATE")
             print(state)
             
-            history = self.history_manager.get_history()
+            history = self.history_manager.get_full_history()
             print("\n")
             print("=======================")
             print("HISTORY")
             print(history)
+            last_message = self.history_manager.last_message
             if state == "no related":
                 prompt = self.get_prompt_no_related(history)
             else:
