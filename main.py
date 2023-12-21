@@ -11,31 +11,31 @@ class MainController:
 
         self.history_manager = HistoryManager()
         history_manager_time = time.time()
-        print(">>> history manager")
+        #print(">>> history manager")
 
         self.state_manager = StateManager()
-        print(">>> state manager")
+        #print(">>> state manager")
 
         self.context_manager = ContextManager("./store")
         context_manager_time = time.time()
-        print(">>> context manager")
+        #print(">>> context manager")
         
         self.llm = GPT4All(model="./models/gpt4all-falcon-q4_0.gguf", callbacks=[StreamingStdOutCallbackHandler()], verbose=True, n_threads=6)
         llm_time = time.time()
-        print(">>> LLM model")
+        #print(">>> LLM model")
         
         self.context_manager.load_db()
         load_db_time = time.time()
 
         total_time = time.time()
 
-        print(f"Tiempo para inicializar HistoryManager: {history_manager_time - self.start_time:.2f} segundos")
-        print(f"Tiempo para inicializar ContextManager: {context_manager_time - history_manager_time:.2f} segundos")
-        print(f"Tiempo para inicializar GPT4All: {llm_time - context_manager_time:.2f} segundos")
-        print(f"Tiempo para cargar la base de datos: {load_db_time - llm_time:.2f} segundos")
-        print(f"Tiempo total para inicializar MainController: {total_time - self.start_time:.2f} segundos")
+        # print(f"Tiempo para inicializar HistoryManager: {history_manager_time - self.start_time:.2f} segundos")
+        # print(f"Tiempo para inicializar ContextManager: {context_manager_time - history_manager_time:.2f} segundos")
+        # print(f"Tiempo para inicializar GPT4All: {llm_time - context_manager_time:.2f} segundos")
+        # print(f"Tiempo para cargar la base de datos: {load_db_time - llm_time:.2f} segundos")
+        # print(f"Tiempo total para inicializar MainController: {total_time - self.start_time:.2f} segundos")
 
-    def get_prompt_greeting(self, history):
+    def get_prompt_no_related(self, history):
         prompt = f"""
 You are an AI assistant. Your only task is to respond briefly to the user's message. Do not initiate or continue a conversation beyond the greeting. 
 Conversation history: "{history}"
@@ -53,32 +53,6 @@ This is the user's question: {query}
 Answer:"""
         
         return prompt.format(history=history, context=context, query=query)
-    
-    #greeting
-    def greeting_answer(self, history):
-        print("=======================================================")
-        print("GREETING FLOW")
-        prompt = self.get_prompt_greeting(history)
-        response = self.llm(prompt)
-        print("\n\nAI:", response)
-        self.history_manager.add_ai_message(response)
-        pass
-
-    #qa
-    def qa_answer(self, history):
-        print("=======================================================")
-        print("QA FLOW")
-        query = self.history_manager.generate_query(history)
-
-        context = self.context_manager.get_optimized_context(query)
-
-        prompt = self.get_prompt(history, context, query)
-
-        response = self.llm(prompt)
-
-        print("\n\nAI:", response)
-        self.history_manager.add_ai_message(response)
-        pass
 
     def run(self):
         while True:
@@ -86,21 +60,53 @@ Answer:"""
             if user_message.lower() == 'salir':
                 break
             self.start_time = time.time()
-
             self.history_manager.add_user_message(user_message)
 
-            history = self.history_manager.get_full_history()
-            history_time = time.time()
+            summary = self.history_manager.get_optimized_history()
+            print("\n")
+            print("=======================")
+            print("SUMMARY")
+            print(summary)
 
-            state = self.state_manager.get_state(history)
-            if "question answering" in state:
-                history = self.history_manager.get_optimized_history()
-                history_time = time.time()
-                self.qa_answer(history)
+            input_optimizated = self.history_manager.generate_query(summary)
+            print("\n")
+            print("=======================")
+            print("INPUT OPTIMIZATED")
+            print(input_optimizated)
+
+            context_optimizated = self.context_manager.get_optimized_context(input_optimizated)
+            print("\n")
+            print("=======================")
+            print("CONTEXT OPTIMIZATED")
+            print(context_optimizated)
+
+            state = self.state_manager.get_state(context_optimizated, input_optimizated)
+            print("\n")
+            print("=======================")
+            print("STATE")
+            print(state)
+            
+            history = self.history_manager.get_history()
+            print("\n")
+            print("=======================")
+            print("HISTORY")
+            print(history)
+            if state == "no related":
+                prompt = self.get_prompt_no_related(history)
             else:
-                self.greeting_answer(history)
+                prompt = self.get_prompt(history, context_optimizated, input_optimizated)
 
-            end_time = time.time()
+            print("\n")
+            print("=======================")
+            print("PROMPT")
+            print(prompt)
+            print("=======================")
+            print("=======================")
+
+            response = self.llm(prompt)
+            self.history_manager.add_ai_message(response)
+            print("\n\n")
+            #end_time = time.time()
 
 
 #"Is there a way to create a custom study area in Business Analyst without using rings or drive times?"

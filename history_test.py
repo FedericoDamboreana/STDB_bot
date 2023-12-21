@@ -42,7 +42,3 @@ for chat in chats:
     optimized_history = chat.get_optimized_history()
 
     answer = chat.generate_query(optimized_history)
-    print("\n\n")
-    print("\nGENERATED QUERY\n")
-    print(answer)
-    print("\n=====================================================================")

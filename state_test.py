@@ -34,7 +34,7 @@ for chat in chats:
 
     state = state_manager.get_state(full_history)
 
-    print("\n\n")
-    print(state)
+    # print("\n\n")
+    # print(state)
 #    print(state.split("The state that better match the conversation is ")[-1].rstrip('.'))
-    print("\n=====================================================================")
+    # print("\n=====================================================================")

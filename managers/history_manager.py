@@ -39,9 +39,8 @@ class HistoryManager:
     
     def get_optimized_history(self):
         payload = {
-            "inputs": "Given this conversation between a user and an AI: \n" + self.get_history() + "\n\nSummary: The user" ,
+            "inputs": "Given this conversation history between a user and an AI: \n" + self.get_full_history() + "\n\nPay attention to the last user's message. Summarize this conversation history without any extra information and without AI response.\nSummary: The user" ,
         }
-
         response = requests.post(
             "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
             headers=self.headers,
@@ -54,7 +53,7 @@ class HistoryManager:
             return f"An error occurred: {response.text}"
         
     def generate_query(self, summary):
-        prompt = "\n\nWhat does the user wants to know?\nThe user wants to"
+        prompt = "\n\nWithout give an AI answer. What does the user wants to know?\nThe user wants to"
         payload = {
             "inputs": "This is the summary of a conversation of a user and a AI: " + summary + "\n\nThis is the user's last question: " + self.last_message + prompt,
         }
