@@ -1,5 +1,4 @@
 import requests
-from managers.context_manager import ContextManager
 
 class StateManager:
     def __init__(self):
@@ -18,8 +17,6 @@ class StateManager:
         if response.status_code == 200:
             summary = response.json()
             response = "related"
-            print("===STATE EN FUNCION===")
-            print(summary[0]["generated_text"])
             if summary[0]["generated_text"].split("Don't give an explanation in your answer: ")[-1].lower().find("no") != -1:
                 response = "no related"
             return response

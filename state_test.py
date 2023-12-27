@@ -33,8 +33,3 @@ for chat in chats:
     full_history = chat.get_full_history()
 
     state = state_manager.get_state(full_history)
-
-    # print("\n\n")
-    # print(state)
-#    print(state.split("The state that better match the conversation is ")[-1].rstrip('.'))
-    # print("\n=====================================================================")

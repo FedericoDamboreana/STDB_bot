@@ -12,7 +12,6 @@ class ContextManager:
         self.headers = {
             "Authorization": "Bearer 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"
         }
-        # print(">>> context manager - init")
 
     def create(self, file_name):
         doc = docx.Document(self.store_path + "/" + file_name)
@@ -27,11 +26,9 @@ class ContextManager:
         documents = text_splitter.create_documents([document_text])
         docs = text_splitter.split_documents(documents)
         self.chroma_db = Chroma.from_documents(docs, self.embedding_function, persist_directory="./store")
-        # print(">>> context manager - db created")
     
     def load_db(self):
         self.chroma_db = Chroma(persist_directory=self.store_path, embedding_function=self.embedding_function)
-        # print(">>> context manager - db loaded: ", self.chroma_db)
 
     def get_matches(self, query):
         matches = self.chroma_db.similarity_search(query, k=3)
