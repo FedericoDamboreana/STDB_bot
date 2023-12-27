@@ -10,19 +10,16 @@ class MainController:
     def __init__(self) -> None:
         self.primer = "You are an AI assistant having a conversation with a user. Answer the user question briefly and using context provided to get information"
         self.model = "gpt-3.5-turbo"
-        self.api_key = "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"
+        self.api_key = "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"
         self.llm = LLM(self.model, self.primer, self.api_key)
     
         self.start_time = time.time()
 
         self.history_manager = HistoryManager()
         history_manager_time = time.time()
-        print(">>> history manager")
         self.state_manager = StateManager()
-        print(">>> state manager")
         self.context_manager = ContextManager("./store")
         context_manager_time = time.time()
-        print(">>> context manager")
 
         # self.llm = GPT4All(model="./models/gpt4all-falcon-q4_0.gguf", callbacks=[StreamingStdOutCallbackHandler()], verbose=True, n_threads=6)
         # llm_time = time.time()
@@ -61,7 +58,7 @@ Answer:"""
 
     def run(self):
         while True:
-            user_message = input("User: ")
+            user_message = input(">>> User: ")
             if user_message.lower() == 'salir':
                 break
             self.start_time = time.time()
@@ -85,7 +82,7 @@ Answer:"""
             last_message = self.history_manager.last_message
             response = self.llm.run([{"role": "user", "content": last_message}], prompt)
 
-            print("AI: " + response)
+            print(">>> AI: " + response)
 
             self.history_manager.add_ai_message(response)
             end_time = time.time()
