@@ -14,9 +14,11 @@ class StateManager:
             headers=self.headers,
             json=payload
         )
+        print("state en manager")
         if response.status_code == 200:
             summary = response.json()
             response = "related"
+            print(summary[0]["generated_text"].split("Don't give an explanation in your answer: ")[-1].lower())
             if summary[0]["generated_text"].split("Don't give an explanation in your answer: ")[-1].lower().find("no") != -1:
                 response = "no related"
             return response

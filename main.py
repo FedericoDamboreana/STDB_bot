@@ -35,11 +35,11 @@ class MainController:
 
         total_time = time.time()
 
-        #print(f"Tiempo para inicializar HistoryManager: {history_manager_time - self.start_time:.2f} segundos")
-        #print(f"Tiempo para inicializar ContextManager: {context_manager_time - history_manager_time:.2f} segundos")
+        print(f"Tiempo para inicializar HistoryManager: {history_manager_time - self.start_time:.2f} segundos")
+        print(f"Tiempo para inicializar ContextManager: {context_manager_time - history_manager_time:.2f} segundos")
         #print(f"Tiempo para inicializar GPT4All: {llm_time - context_manager_time:.2f} segundos")
         #print(f"Tiempo para cargar la base de datos: {load_db_time - llm_time:.2f} segundos")
-        #print(f"Tiempo total para inicializar MainController: {total_time - self.start_time:.2f} segundos")
+        print(f"Tiempo total para inicializar MainController: {total_time - self.start_time:.2f} segundos")
 
     def get_prompt_no_related(self, history):
         prompt = f"""
@@ -68,14 +68,29 @@ Answer:"""
             self.history_manager.add_user_message(user_message)
 
             summary = self.history_manager.get_optimized_history()
+            print("\n")
+            print("optimized history")
+            print(summary)
 
             input_optimizated = self.history_manager.generate_query(summary)
+            print("\n")
+            print("input optimizated")
+            print(input_optimizated)
 
             context_optimizated = self.context_manager.get_optimized_context(input_optimizated)
+            print("\n")
+            print("context optimizated")
+            print(context_optimizated)
 
             state = self.state_manager.get_state(context_optimizated, input_optimizated)
-            
+            print("\n")
+            print("state")
+            print(state)
+
             history = self.history_manager.get_full_history()
+            print("\n")
+            print("history")
+            print(history)
 
             if state == "no related":
                 prompt = self.get_prompt_no_related(history)
