@@ -8,7 +8,7 @@ class StateManager:
         }
 
     def get_state(self, history):
-        payload = {"inputs": """Classify the following conversation in just one of those states: "greeting" or "question answering". \nDon't give any extra information.\n\n {history} \n\n The state that better match the conversation is"""}
+        payload = {"inputs": """Classify this message in just one of those states: "greeting" or "question answering". \nDon't give any extra information.\n\n {history} \n\n The state that better match the conversation is"""}
         payload["inputs"] = payload["inputs"].format(history=history)
         response = requests.post(
             "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",

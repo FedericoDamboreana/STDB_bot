@@ -39,7 +39,7 @@ class HistoryManager:
     
     def get_optimized_history(self):
         payload = {
-            "inputs": "Given this conversation between a user and an AI: \n" + self.get_history() + "\n\nSummary: The user" ,
+            "inputs": "Given this conversation between a user and an AI: \n" + self.get_full_history() + "\n\nSummary: The user" ,
         }
 
         response = requests.post(

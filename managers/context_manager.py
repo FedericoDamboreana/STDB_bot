@@ -34,7 +34,7 @@ class ContextManager:
         print(">>> context manager - db loaded: ", self.chroma_db)
 
     def get_matches(self, query):
-        matches = self.chroma_db.similarity_search(query, k=3)
+        matches = self.chroma_db.similarity_search(query, k=10)
         matches_str = "\n".join([f"{m.page_content}" for m in matches])
         return matches_str
 
