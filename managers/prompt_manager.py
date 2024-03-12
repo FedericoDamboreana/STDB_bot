@@ -22,6 +22,7 @@ This is a summary of the conversation: {history}
 
 This is some information to help you answer the user's question: {context}
 
+Do not explicity mention the information provided, since it is not visible for the user.
 This is the user's question: {message}
 [/INST]
 
