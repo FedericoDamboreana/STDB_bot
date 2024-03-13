@@ -35,6 +35,7 @@ class CacheManager:
             )
         ]
         self.chroma_db.add_documents(docs)
+        print(">>> cache manager - element added")
 
 
     def get_match(self, query):
