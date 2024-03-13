@@ -1,40 +1,49 @@
 from langchain.embeddings import SentenceTransformerEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.docstore.document import Document
 from langchain.vectorstores import Chroma
-import requests
-import docx
 
-class ContextManager:
+class CacheManager:
     def __init__(self, store_path):
         self.store_path = store_path
         self.embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
         self.chroma_db = None
-        self.headers = {
-            "Authorization": "Bearer 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"
-        }
-        print(">>> context manager - init")
+        self.load_db()
+    
+    def create(self):
+        docs = [
+            Document(
+                page_content="I like bread",
+                metadata={
+                    "answer": "Me too!"
+                }
+            )
+        ]
+        self.chroma_db = Chroma.from_documents(docs, self.embedding_function, persist_directory=self.store_path)
+        print(">>> cache manager - db created: ", self.chroma_db)
     
     def load_db(self):
         self.chroma_db = Chroma(persist_directory=self.store_path, embedding_function=self.embedding_function)
-        print(">>> context manager - db loaded: ", self.chroma_db)
+        print(">>> cache manager - db loaded: ", self.chroma_db)
+    
+    def add(self, question, answer):
+        docs = [
+            Document(
+                page_content=question,
+                metadata={
+                    "answer": answer
+                }
+            )
+        ]
+        self.chroma_db.add_documents(docs)
 
-    def get_matches(self, query):
+
+    def get_match(self, query):
+        result = None
         match = self.chroma_db.similarity_search_with_score(query, k=1)
-        return match
-
-    def get_optimized_context(self, query):
-        matches = self.get_matches(query)
-        payload = {
-            "inputs": matches,
-        }
-        response = requests.post(
-            "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
-            headers=self.headers,
-            json=payload
-        )
-        if response.status_code == 200:
-            summary = response.json()
-            return summary[0]["summary_text"]
+        if match and len(match) > 0 and match[0][1] < 0.2:
+            print(">>> cache manager - top result: ", match[0])
+            result = match[0][0].metadata['answer']
         else:
-            return f"An error occurred: {response.text}"
-        pass
+            print(">>> cache manager - no coincidences")
+
+        return result
