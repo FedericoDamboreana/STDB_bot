@@ -1,6 +1,6 @@
-from langchain.embeddings import SentenceTransformerEmbeddings
-from langchain.docstore.document import Document
-from langchain.vectorstores import Chroma
+from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_community.docstore.document import Document
+from langchain_community.vectorstores import Chroma
 
 class CacheManager:
     def __init__(self, store_path):

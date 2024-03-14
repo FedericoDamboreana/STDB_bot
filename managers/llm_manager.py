@@ -9,14 +9,15 @@ class LLMManager:
     self.llms = [Gemini(), Mixtral(), GPT()]
     self.error = 0
 
-  def run(self, state, history='', context='', message=''):
-    prompt = self.prompt_manager.get_prompt(state, self.llm.get_model_name(), history, context, message)
-    answer = self.llm[self.error].run(prompt)
+  def run(self, is_related, history='', context='', message=''):
+    prompt = self.prompt_manager.get_prompt(is_related, self.llms[self.error].get_model_name(), history, context, message)
+    answer = self.llms[self.error].run(prompt)
 
     if answer == "error":
+      print(">>> error in llm manager - error count: ", self.error)
       if self.error < 2:
         self.error += 1
-        answer = self.run(state, history=history, context=context, message=message)
+        answer = self.run(is_related, history=history, context=context, message=message)
       else:
         self.error = 0
     

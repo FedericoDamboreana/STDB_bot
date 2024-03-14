@@ -1,6 +1,6 @@
-from langchain.embeddings import SentenceTransformerEmbeddings
+from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 import requests
 import docx
 

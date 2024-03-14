@@ -6,7 +6,7 @@ class FlowHelper:
         pass
 
     def is_related(self, question):
-        url = 'http://localhost:5001/related'
+        url = 'http://192.168.0.253:5001/related'
         headers = {'Content-Type': 'application/json'}
         data = {'question': question}
         response = requests.post(url, json=data, headers=headers)
@@ -15,8 +15,8 @@ class FlowHelper:
         else:
             return f'Error: {response.status_code}'
     
-    def query_chained(self, question):
-        url = 'http://localhost:5001/chained'
+    def is_chained(self, question):
+        url = 'http://192.168.0.253:5001/chained'
         headers = {'Content-Type': 'application/json'}
         data = {'question': question}
         response = requests.post(url, json=data, headers=headers)

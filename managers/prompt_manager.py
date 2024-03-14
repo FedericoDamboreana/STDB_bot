@@ -14,7 +14,7 @@ Answer the user question briefly and using context provided to get information.
     if len(history) > 0:
       prompt += "\n\n\nThis is a summary of the conversation: "
       for h in history:
-        prompt += f"\n\n-{h}"
+        prompt += f"\n\n-{h['message']}"
     
     if self.related:
       prompt += f"\n\n\n This is some information to help you answer the user's question: {context} \n\n Do not explicity mention the information provided, since it is not visible for the user."
@@ -37,7 +37,7 @@ Answer the user question briefly and using context provided to get information.
     if len(history) > 0:
       prompt += "\n\n\nThis is a summary of the conversation: "
       for h in history:
-        prompt += f"\n\n-{h}"
+        prompt += f"\n\n-{h['message']}"
     
     if self.related:
       prompt += f"\n\n\n This is some information to help you answer the user's question: {context} \n\n Do not explicity mention the information provided, since it is not visible for the user."
@@ -78,10 +78,11 @@ This is some information to help you answer the user's question: {context}"""
     self.related = state == "related"
     
     if model == "gemini":
-      return self.gemini_prompt(history, context, message)
+      print(">>> writing prompt for ", model)
+      return self.gemini_prompt(history.get_full_history(), context, message)
     
     if model == "mixtral":
-      return self.mixtral_prompt(history, context, message)
+      return self.mixtral_prompt(history.get_full_history(), context, message)
     
     if model == "gpt":
-      return self.gpt_prompt(history, context, message)
+      return self.gpt_prompt(history.get_full_history(), context, message)
