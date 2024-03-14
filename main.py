@@ -11,7 +11,6 @@ class MainController:
         self.history_manager = HistoryManager()
         self.context_manager = ContextManager("./store")
         self.llm = LLMManager()
-        self.context_manager.load_db()
     
 
     def fix_chained_question(self, message):
@@ -39,12 +38,12 @@ class MainController:
         while True:
             response = ''
             is_related = False
-            raw_message = input("\n\nUser: ")
+            raw_message = input("\n\nUser: ") # mensaje original
             if raw_message.lower() == 'salir':
                 break
             user_message, is_related, is_chained = self.process_user_message(raw_message)
 
-            print(">>> user message: ", user_message)
+            print(">>> user message: ", user_message) # nuevo mensaje (si es que se cambio)
             print(">>> related: ", is_related)
             print(">>> chained: ", is_chained)
             
@@ -58,9 +57,9 @@ class MainController:
             if is_related:
                 context = self.context_manager.get_matches(user_message)
                 print(">>> context retrieved")
-                response = self.llm.run(is_related, self.history_manager, context, user_message)
+                response = self.llm.run(is_related, self.history_manager, context, raw_message)
             else:
-                response = self.llm.run(is_related, self.history_manager, None, user_message)
+                response = self.llm.run(is_related, self.history_manager, None, raw_message)
             
             if not is_chained: 
                 self.cache.add(user_message, response)
