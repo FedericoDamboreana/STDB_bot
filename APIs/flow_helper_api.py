@@ -36,10 +36,10 @@ def is_chained(question):
     inputs = chained_tokenizer(question, return_tensors='pt', padding=True, truncation=True)
     input_ids = inputs['input_ids'].to(device)
     attention_mask = inputs['attention_mask'].to(device)
-    related_model.eval()
+    chained_model.eval()
 
     with torch.no_grad():
-        outputs = related_model(input_ids, attention_mask=attention_mask)
+        outputs = chained_model(input_ids, attention_mask=attention_mask)
 
     _, predicted_class = torch.max(outputs.logits, dim=1)
     return predicted_class.item()
