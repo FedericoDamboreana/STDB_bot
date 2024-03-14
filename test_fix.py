@@ -47,3 +47,23 @@ assistant: Spring is generally considered the best time.
 user: And what festivals occur during that period?
 
 """
+
+"""
+Tipos de modelos
+-Text Generation
+-Text2Text
+-QA
+-Summarization
+
+google/flan-t5-xxl
+MBZUAI/LaMini-Flan-T5-248M
+
+flan
+orca
+gpt
+llama
+mistral/mixtral
+falcon
+
+
+"""
