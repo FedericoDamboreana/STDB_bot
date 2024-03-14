@@ -62,7 +62,8 @@ class MainController:
             else:
                 response = self.llm.run(is_related, self.history_manager, None, user_message)
             
-            self.cache.add(user_message, response)
+            if not is_chained: 
+                self.cache.add(user_message, response)
             self.end_process(raw_message, response)
 
 
