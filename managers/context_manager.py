@@ -39,3 +39,40 @@ class ContextManager:
         matches = self.chroma_db.similarity_search(query, k=3)
         matches_str = "\n\n\n".join([f"{m.page_content}" for m in matches])
         return matches_str
+
+
+context = ContextManager("./store")
+
+file_name = "dataset_1.docx"
+
+context.create(file_name)
+
+#query = "Where can I find Median Household Income, Total Population & Population Density as a color-coded layer on the map?"
+#query = " how can i search or filter project content?"
+
+queries = [
+    "What is the source for the business data within the Business Analyst App?",
+    "How do I create a color-coded map using total population by zip code within the state of Texas?",
+    "Which report shows retail specific data?",
+    "What options are available for types of drivetime within Business Analyst?",
+    "What is the difference between rings and bands for a study area in Business Analyst?",
+    "How do I create a smart map?",
+    "Can I search for NAICS codes in Business Analyst?",
+    "Can I upload business logos in Business Analyst?",
+    "Can I run reports in different languages?",
+    "Can I run reports for different countries? If so, which ones?",
+    "Where can I find Median Household Income, Total Population & Population Density as a color-coded layer on the map?"
+]
+
+for query in queries:
+    matches = context.get_matches(query)
+    print("la query es:", query)
+    print("------------------------------")
+    print("Resultados de la búsqueda:\n", matches)
+    print("\n##############################")
+
+# matches = context.get_matches(query)
+
+# print("la query es:", query)
+# print("------------------------------")
+# print("Resultados de la búsqueda:\n", matches)
