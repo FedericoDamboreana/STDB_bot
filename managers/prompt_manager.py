@@ -9,15 +9,12 @@ class PromptMangaer:
   def gemini_prompt(self, history, context, message):
     prompt = """
 You are an assistant having a conversation with a user.
-Answer the user question briefly and using context provided to get information.
+Answer the user question using context provided to get information.
+The context may not be exactly related to the question, but it may be enought hints for you to answer.
 """
-    if len(history) > 0:
-      prompt += "\n\n\nThis is a summary of the conversation: "
-      for h in history:
-        prompt += f"\n\n-{h['message']}"
     
     if self.related:
-      prompt += f"\n\n\n This is some information to help you answer the user's question: {context} \n\n Do not explicity mention the information provided, since it is not visible for the user."
+      prompt += f"\n\n\n Context: {context} \n\n "
 
     prompt += f"""
 This is the user's question: {message}
@@ -75,7 +72,7 @@ This is some information to help you answer the user's question: {context}"""
 
 
   def get_prompt(self, state, model, history, context, message):
-    self.related = state == "related"
+    self.related = state
     
     if model == "gemini":
       print(">>> writing prompt for ", model)

@@ -3,7 +3,7 @@ import requests
 class FlowHelper:
 
     def __init__(self) -> None:
-        self.base_url = "http://192.168.0.200:8020"
+        self.base_url = "http://186.127.226.94:8020/"
         pass
 
     def is_related(self, question):
